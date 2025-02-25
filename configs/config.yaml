@@ -1,0 +1,17 @@
+# 数据集配置
+StepActions:
+  train:
+    batch_size: 32
+    shuffle: true
+    num_workers: 8
+    epochs: 10
+    gradient_accumulation_steps: 1
+    loss_func_type: cross_entropy_loss
+    optimizer_type: adamW
+    Optimizer:
+      adamW:
+        lr: 0.001
+        weight_decay: 0.002
+    use_amp: False
+  num_class: 5
+  device: cuda:0
