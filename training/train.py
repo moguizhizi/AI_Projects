@@ -51,8 +51,8 @@ def train(dataset_dict, config_dict, args):
         print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
 
         # 调用保存函数
-        save_model_weights(model, optimizer, epoch + 1, avg_loss, save_dir=f'AI_Projects/checkpoints/model_checkpoints/{dataset_name}',
-                           file_prefix=f'model_name_epoch_{epoch + 1}', save_type='checkpoint')
+        save_model_weights(model, optimizer, epoch + 1, avg_loss, save_dir=f'AI_Projects/checkpoints/model_checkpoints/{dataset_name}/{model_name}',
+                           file_prefix=f'epoch_{epoch + 1}', save_type='checkpoint')
 
 
 def train_step(model, batch, optimizer, loss_func, gradient_accumulation_steps=1, use_amp=False):
