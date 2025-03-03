@@ -13,4 +13,19 @@ StepActions:
         2: 等待时长
         3: 多app
         4: 其他
+StepActions_En:
+    raw:
+        train: /data1/dataset/StepActions_En/raw/train.json
+        test: /data1/dataset/StepActions_En/raw/test.json
+        file_type: json
+    processed:
+        train: /data1/dataset/StepActions_En/processed/train.json
+        test: /data1/dataset/StepActions_En/processed/test.json
+        file_type: json
+    id2label:
+        0: 循环操作
+        1: 取数
+        2: 等待时长
+        3: 多app
+        4: 其他
 
