@@ -33,3 +33,10 @@ load_comparison = {
     "StepActions_En":
         {"bert_classifier": step_actions_en_bert_classifier_comparison},
 }
+
+load_resultor = {
+    "StepActions":
+        {"bert_classifier": step_actions_bert_classifier_predict},
+    "StepActions_En":
+        {"bert_classifier": step_actions_en_bert_classifier_predict},
+}

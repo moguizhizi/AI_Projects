@@ -1,21 +1,21 @@
-from data.preprocess import StepActionsPreprocessor
-from data.data_loader import StepActionsDataLoader
-from data.data_processe import StepActionsDataset
+from data.preprocess import StepActionsPreprocessor, StepActionsEnPreprocessor
+from data.data_loader import StepActionsDataLoader, StepActionsEnDataLoader
+from data.data_processe import StepActionsDataset, StepActionsEnDataset
 from data.collate_utils import step_actions_collate_fn, step_actions_en_collate_fn
 
 data_loader = {
     'StepActions': StepActionsDataLoader,
-    'StepActions_En': StepActionsDataLoader,
+    'StepActions_En': StepActionsEnDataLoader,
 }
 
 load_dataset = {
     'StepActions': StepActionsDataset,
-    'StepActions_En': StepActionsDataset,
+    'StepActions_En': StepActionsEnDataset,
 }
 
 load_preprocessor = {
     'StepActions': StepActionsPreprocessor,
-    'StepActions_En': StepActionsPreprocessor,
+    'StepActions_En': StepActionsEnPreprocessor,
 }
 
 load_collate = {

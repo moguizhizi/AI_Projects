@@ -5,7 +5,7 @@ from transformers import BertForSequenceClassification
 
 
 class BertClassifier(nn.Module):
-    def __init__(self, config_dict, args):
+    def __init__(self, config_dict, args=None):
         super(BertClassifier, self).__init__()
         self.device = config_dict["device"]
 
@@ -14,8 +14,9 @@ class BertClassifier(nn.Module):
         if self.model_ckpt != None:
             self.bert = BertForSequenceClassification.from_pretrained(
                 self.model_ckpt, num_labels=config_dict["num_class"])
+
         else:
-            # 抛出异常提示用户指定模型检查点
+            # 鎶涘嚭寮傚父鎻愮ず鐢ㄦ埛鎸囧畾妯″瀷妫�鏌ョ偣
             raise ValueError(
                 "Please specify a valid model checkpoint in the config_dict['model_ckpt']['bert_classifier'].")
 

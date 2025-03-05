@@ -44,14 +44,33 @@ def load_json_data(file_path, default=None):
     return default
 
 
-def save_json_data(data, file_path):
-    """将数据保存到JSON文件。"""
+def save_json_data(data, file_path: str) -> None:
+    """
+    将数据保存到 JSON 文件，自动创建目录（如果不存在）。
+
+    Args:
+        data: 要保存的数据
+        file_path (str): JSON 文件的保存路径
+
+    Raises:
+        ValueError: 如果保存 JSON 文件时发生错误
+    """
     try:
+        # 获取文件所在的目录
+        directory = os.path.dirname(file_path)
+
+        # 如果目录不为空且不存在，则创建目录
+        if directory and not os.path.exists(directory):
+            os.makedirs(directory, exist_ok=True)
+            print(f"Created directory: {directory}")
+
+        # 保存 JSON 文件
         with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
         print(f"Data has been converted to JSON and saved to {file_path}")
+
     except Exception as e:
-        print(f"Error saving JSON data to {file_path}: {e}")
+        raise ValueError(f"Error saving JSON data to {file_path}: {e}")
 
 
 def save_model_weights(model, optimizer=None, epoch=None, loss=None, save_dir='./checkpoints',
@@ -67,7 +86,6 @@ def save_model_weights(model, optimizer=None, epoch=None, loss=None, save_dir='.
     :param file_prefix: 保存文件的前缀，默认为'model'
     :param save_type: 保存类型，可选'weights'（仅保存模型权重）或'checkpoint'（保存模型权重、优化器状态等信息）
     """
-    import os
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -177,4 +195,29 @@ def copy_file(
         return False
     except Exception as e:
         print(f"Failed to copy file to {destination_path}: {e}")
+        return False
+
+
+def is_valid_json(text: Union[str, bytes]) -> bool:
+    """
+    判断文本内容是否满足 JSON 格式。
+
+    Args:
+        text (Union[str, bytes]): 要检查的文本内容，可以是字符串或字节
+
+    Returns:
+        bool: 如果文本是有效的 JSON 格式，返回 True；否则返回 False
+    """
+    try:
+        # 如果输入是 bytes，解码为字符串
+        if isinstance(text, bytes):
+            text = text.decode("utf-8")
+
+        # 尝试解析 JSON
+        json.loads(text)
+        return True
+    except json.JSONDecodeError:
+        return False
+    except Exception as e:
+        print(f"Unexpected error: {e}")
         return False

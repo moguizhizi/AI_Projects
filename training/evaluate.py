@@ -7,11 +7,16 @@ from training import load_metric, load_print, load_comparison
 import glob
 import os
 import torch
+from pprint import pprint
 
 
 def test(dataset_dict, config_dict, args):
     dataset_name = args.dataset
     model_name = args.model_name
+    
+    # 打印数据集配置
+    print(f"Dataset configuration for {dataset_name}:")
+    pprint(config_dict[dataset_name])
 
     test_config = config_dict[dataset_name]["test"]
 
@@ -27,7 +32,6 @@ def test(dataset_dict, config_dict, args):
     comparison = load_comparison[dataset_name][model_name]
 
     model = load_model[model_name](config_dict[dataset_name], args)
-    model.to(device)
 
     checkpoints_dir = os.path.join(
         "AI_Projects", "checkpoints", "model_checkpoints", dataset_name, model_name, "normal")
@@ -45,9 +49,6 @@ def test(dataset_dict, config_dict, args):
     # 评估所有检查点
     checkpoint_metrics = []
     for single_checkpoint_path in all_checkpoint_paths:
-        model = load_model_weights(model, single_checkpoint_path)
-        model.eval()
-
         eval_metirc = evaluate_checkpoint(model, dataloader, metric,
                                           single_checkpoint_path, device, print_callback)
 
