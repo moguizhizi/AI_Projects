@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Tuple, Dict, Optional
+from typing import Tuple, Dict, Optional, List, Any
 import torch
 
 
@@ -65,8 +65,8 @@ def step_actions_bert_classifier_comparison(metric1: Dict, metric2: Dict) -> boo
         return True
     else:
         return False
-    
-    
+
+
 def step_actions_en_bert_classifier_metric(results: Dict):
     predict = results["predict"]
     label = results["label"]
@@ -129,7 +129,7 @@ def step_actions_en_bert_classifier_comparison(metric1: Dict, metric2: Dict) -> 
         return True
     else:
         return False
-    
+
 
 def select_best_checkpoint(checkpoint_metrics, comparison_func) -> Tuple[Optional[str], Optional[Dict]]:
     """
@@ -159,3 +159,25 @@ def select_best_checkpoint(checkpoint_metrics, comparison_func) -> Tuple[Optiona
             continue
 
     return best_checkpoint, best_metric
+
+
+def step_actions_bert_classifier_predict(batch: Dict[str, Any], results: Dict[str, Any], id2label: Dict[int, str]) -> List:
+    predict = results["predict"]
+    
+    predict_list = []
+    for id in predict.tolist():
+        predict_list.append(id2label[id])
+        
+
+    return zip(predict_list, batch["index"])
+
+
+def step_actions_en_bert_classifier_predict(batch: Dict[str, Any], results: Dict[str, Any], id2label: Dict[int, str]) -> List:
+    predict = results["predict"]
+    
+    predict_list = []
+    for id in predict.tolist():
+        predict_list.append(id2label[id])
+        
+
+    return zip(predict_list, batch["index"])

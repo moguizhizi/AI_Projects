@@ -5,12 +5,18 @@ from training import load_loss_func, load_optimizer
 from transformers import get_scheduler
 import torch
 import os
+from pprint import pprint
 
 
 def train(dataset_dict, config_dict, args):
+    
     dataset_name = args.dataset
     model_name = args.model_name
-
+    
+    # 打印数据集配置
+    print(f"Dataset configuration for {dataset_name}:")
+    pprint(config_dict[dataset_name])
+    
     train_config = config_dict[dataset_name]["train"]
 
     num_epochs = train_config["epochs"]

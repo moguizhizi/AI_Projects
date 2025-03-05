@@ -1,0 +1,98 @@
+bert_classifier:
+    port: 6578
+    url: http://10.20.42.68:6578/ai/api/rewrite
+StepActions_En:
+    num_class: 5
+    device: cuda:0
+    model_ckpt: { bert_classifier: bert-base-multilingual-uncased }
+    batch_size: 16
+    shuffle: False
+    num_workers: 8
+    id2label:
+        0: 循环操作
+        1: 取数
+        2: 等待时长
+        3: 多app
+        4: 其他
+
+LLM_Type: qwen2_72b
+LLM_Request_URL:
+    DeepSeek-R1: http://223.106.234.6:7003/v1/chat/completions
+    qwen2_72b: http://10.20.42.105:1028/v1/chat/completions
+    qwen2_vl: http://10.20.42.105:1035/generate
+    deepseek-qwen: http://10.20.42.105:1027/v1/chat/completions
+
+request_template:
+    qwen2_72b:
+        {
+            "model": "qwen2",
+            "messages":
+                [
+                    { "role": "system", "content": "None" },
+                    { "role": "user", "content": "" },
+                ],
+            "max_tokens": 512,
+            "presence_penalty": 1.03,
+            "frequency_penalty": 1.05,
+            "seed": null,
+            "temperature": 0.2,
+            "top_p": 0.95,
+            "stream": false,
+        }
+    qwen2_vl:
+        {
+            "prompt":
+                [
+                    { "type": "text", "text": "分别描述一下这两个图片。" },
+                    {
+                        "type": "image_url",
+                        "image_url": "https://www.hoperun.com/jjfaBanner.jpg",
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": "https://www.hoperun.com/aboutBanner.png",
+                    },
+                ],
+            "max_tokens": 100,
+            "repetition_penalty": 1.03,
+            "presence_penalty": 1.2,
+            "frequency_penalty": 1.2,
+            "temperature": 0.5,
+            "top_k": 10,
+            "top_p": 0.95,
+        }
+    deepseek-qwen:
+        {
+            "model": "deepseek",
+            "messages":
+                [
+                    { "role": "system", "content": "None" },
+                    { "role": "user", "content": "" },
+                ],
+            "max_tokens": 512,
+            "presence_penalty": 1.03,
+            "frequency_penalty": 1.05,
+            "seed": null,
+            "temperature": 0.2,
+            "top_p": 0.95,
+            "stream": false,
+        }
+    DeepSeek-R1:
+        {
+            "model": "DeepSeek-R1",
+            "messages":
+                [
+                    { "role": "system", "content": "None" },
+                    {
+                        "role": "user",
+                        "content": "",
+                    },
+                ],
+            "max_tokens": 100,
+            "presence_penalty": 1.03,
+            "frequency_penalty": 1.05,
+            "seed": null,
+            "temperature": 0.2,
+            "top_p": 0.95,
+            "stream": false,
+        }
