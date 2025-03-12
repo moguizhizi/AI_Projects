@@ -2,7 +2,10 @@ import random
 import os
 import numpy as np
 import torch
+import torch.nn.functional as F
 from langdetect import detect
+from sklearn.preprocessing import MultiLabelBinarizer
+
 
 def seed_everything(seed=1029):
     random.seed(seed)
@@ -13,22 +16,30 @@ def seed_everything(seed=1029):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
 
+
 def is_english_by_langdetect(text: str) -> bool:
     """
-    Ê¹ÓÃ langdetect ÅĞ¶ÏÎÄ±¾ÊÇ·ñÎªÓ¢ÎÄ¡£
+    ä½¿ç”¨ langdetect åˆ¤æ–­æ–‡æœ¬æ˜¯å¦ä¸ºè‹±æ–‡ã€‚
 
     Args:
-        text (str): ÊäÈëÎÄ±¾
+        text (str): è¾“å…¥æ–‡æœ¬
 
     Returns:
-        bool: ÊÇ·ñÎªÓ¢ÎÄ
+        bool: æ˜¯å¦ä¸ºè‹±æ–‡
     """
     try:
-        # ¼ì²âÓïÑÔ
+        # æ£€æµ‹è¯­è¨€
         lang = detect(text)
         return lang == "en"
     except Exception as e:
         print(f"Language detection failed: {e}")
         return False
 
-__all__ = ["seed_everything", "is_english_by_langdetect"]
+
+def to_multi_hot_sklearn(category_ids, num_classes):
+    mlb = MultiLabelBinarizer(classes=range(num_classes))
+    multi_hot = mlb.fit_transform([category_ids])[0]
+    return multi_hot.tolist()
+
+
+__all__ = ["seed_everything", "is_english_by_langdetect", "to_multi_hot_sklearn"]
