@@ -89,8 +89,8 @@ def train(dataset_dict, config_dict, args):
 
 def train_step(model, batch, loss_func, gradient_accumulation_steps=1, use_amp=False):
     with torch.amp.autocast(device_type='cuda', dtype=torch.float16, enabled=use_amp):
-        outputs, labels = model(batch)
-        loss = loss_func(outputs, labels) / \
+        outputs, labels, task_configs = model(batch)
+        loss = loss_func(outputs, labels, task_configs) / \
             gradient_accumulation_steps  # 适配梯度累积
 
     loss.backward()

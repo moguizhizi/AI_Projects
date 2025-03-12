@@ -28,4 +28,29 @@ StepActions_En:
         2: 等待时长
         3: 多app
         4: 其他
+AutomotiveUserOpinions:
+    raw:
+        train: /data1/dataset/AutomotiveUserOpinions/raw/train.txt
+        test: /data1/dataset/AutomotiveUserOpinions/raw/test.txt
+        file_type: txt
+    processed:
+        train: /data1/dataset/AutomotiveUserOpinions/processed/train.json
+        test: /data1/dataset/AutomotiveUserOpinions/processed/test.json
+        file_type: json
+    id2label:
+        emotion:
+           0: 中立
+           1: 正向
+           -1: 负向
+        category:
+           0: 动力
+           1: 价格
+           2: 内饰
+           3: 配置
+           4: 安全性
+           5: 外观
+           6: 操控
+           7: 油耗
+           8: 空间
+           9: 舒适性      
 

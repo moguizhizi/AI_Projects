@@ -74,5 +74,46 @@ StepActions_En:
   num_class: 5
   device: cuda:0
   model_ckpt: {
-     bert_classifier: bert-base-cased
+     bert_classifier: bert-base-multilingual-uncased
+  }
+
+AutomotiveUserOpinions:
+  train:
+    batch_size: 16
+    shuffle: true
+    num_workers: 8
+    epochs: 50
+    gradient_accumulation_steps: 1
+    loss_func_type: cross_bce_loss
+    optimizer_type: adamW
+    Optimizer:
+      adamW:
+        lr: 0.0001
+        weight_decay: 0.01
+    use_amp: False
+    scheduler_type: "linear"
+    num_warmup_steps: 0
+    bce_weight: 0.8
+  valid:
+    batch_size: 32
+    shuffle: true
+    num_workers: 8
+    epochs: 10
+    gradient_accumulation_steps: 1
+    loss_func_type: cross_bce_loss
+    optimizer_type: adamW
+    Optimizer:
+      adamW:
+        lr: 0.001
+        weight_decay: 0.002
+    use_amp: False
+  test:
+    batch_size: 32
+    shuffle: True
+    num_workers: 8
+  num_category_class: 10
+  num_emotion_class: 3
+  device: cuda:0
+  model_ckpt: {
+     bert_multi_task_classifier: bert-base-chinese
   }

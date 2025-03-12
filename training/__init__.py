@@ -1,11 +1,12 @@
 
 from training.optimizer import CustomAdamW
-from training.loss_function import CustomCrossEntropyLoss
+from training.loss_function import CustomCrossEntropyLoss, CrossBCEWithLogitsLoss
 from training.metric import *
 
 
 load_loss_func = {
-    "cross_entropy_loss": CustomCrossEntropyLoss
+    "cross_entropy_loss": CustomCrossEntropyLoss,
+    "cross_bce_loss": CrossBCEWithLogitsLoss
 }
 
 load_optimizer = {

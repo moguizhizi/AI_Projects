@@ -1,3 +1,4 @@
+from typing import Union
 import yaml
 import json
 import os
@@ -185,6 +186,9 @@ def copy_file(
     Returns:
         bool: 复制是否成功，成功返回 True，失败返回 False
     """
+
+    destination_dir = os.path.dirname(destination_path)
+    os.makedirs(destination_dir, exist_ok=True)
 
     try:
         shutil.copy2(source_path, destination_path)
