@@ -87,7 +87,7 @@ def evaluate_checkpoint(model, dataloader, metric_func, checkpoint_path, device,
     """
     # 加载检查点权重
     try:
-        model = load_model_weights(model, checkpoint_path)
+        model = load_model_weights(model, checkpoint_path, device=device)
     except Exception as e:
         raise ValueError(f"Failed to load checkpoint {checkpoint_path}: {e}")
 
