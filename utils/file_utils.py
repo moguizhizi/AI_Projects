@@ -112,27 +112,47 @@ def save_model_weights(model, optimizer=None, epoch=None, loss=None, save_dir='.
         raise ValueError(
             "save_type should be either 'weights' or 'checkpoint'")
 
-
-def load_model_weights(model, load_path, optimizer=None):
+def load_model_weights(model, load_path, optimizer=None, device=None):
     """
-    加载模型权重或检查点的函数
+    加载模型权重或检查点的函数，并支持指定设备加载
 
     :param model: 要加载权重的模型
     :param load_path: 模型权重或检查点的加载路径
     :param optimizer: 优化器（如果加载检查点且需要恢复优化器状态，默认为None）
+    :param device: 设备（'cpu' 或 'cuda' 或 torch.device 对象，默认为None，表示使用模型当前设备）
     :return: 加载权重后的模型，可能还有加载状态后的优化器、epoch和loss（如果加载的是检查点）
     """
+    # 检查文件是否存在
     if not os.path.exists(load_path):
         raise FileNotFoundError(f"The file {load_path} does not exist.")
 
-    checkpoint = torch.load(load_path)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    print(f"Model weights loaded from {load_path}")
+    # 如果 device 未指定，使用模型当前的设备
+    if device is None:
+        device = next(model.parameters()).device
+        print(f"Using device: {device}")
+    else:
+        device = torch.device(device)
+        print(f"Using specified device: {device}")
 
+    # 加载检查点
+    checkpoint = torch.load(load_path, map_location=device)
+    # 将模型移到指定设备
+    model.to(device)
+    # 加载模型权重
+    model.load_state_dict(checkpoint['model_state_dict'])
+    print(f"Model weights loaded from {load_path} on {device}")
+
+    # 如果有优化器状态且优化器不为空，加载优化器状态
     if 'optimizer_state_dict' in checkpoint and optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        print(f"Optimizer state loaded from {load_path}")
+        # 确保优化器参数与模型在同一设备上
+        for state in optimizer.state.values():
+            for k, v in state.items():
+                if isinstance(v, torch.Tensor):
+                    state[k] = v.to(device)
+        print(f"Optimizer state loaded from {load_path} on {device}")
 
+    # 加载 epoch 和 loss（如果存在）
     if 'epoch' in checkpoint:
         epoch = checkpoint['epoch']
         print(f"Epoch information loaded: {epoch}")

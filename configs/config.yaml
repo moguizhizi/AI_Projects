@@ -113,6 +113,7 @@ AutomotiveUserOpinions:
     num_workers: 8
   num_category_class: 10
   num_emotion_class: 3
+  multi_label_threshold: 0.5
   device: cuda:0
   model_ckpt: {
      bert_multi_task_classifier: bert-base-chinese

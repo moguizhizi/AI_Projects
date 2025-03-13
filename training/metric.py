@@ -95,6 +95,30 @@ def step_actions_en_bert_classifier_metric(results: Dict):
     return metric_count
 
 
+def automotive_user_opinions_bert_multi_task_classifier(results: Dict):
+    predictions = results["predict"]
+    labels = results["label"]
+
+    pred_category_id = predictions["multi-label"]
+    pred_emotion_id = predictions["single-label"]
+
+    category_id = labels["multi-label"]
+    emotion_id = labels["single-label"]
+
+    num_category_hit = torch.sum(pred_category_id & category_id, dim=0)
+    num_emotion_hit = int(torch.sum(pred_emotion_id == emotion_id))
+    num_batch_category = torch.sum(category_id, dim=0)
+    num_batch_emotion = len(emotion_id)
+
+    metric_count = {}
+    metric_count["category_hit"] = num_category_hit.tolist()
+    metric_count["emotion_hit"] = num_emotion_hit
+    metric_count["category"] = num_batch_category.tolist()
+    metric_count["emotion"] = num_batch_emotion
+
+    return metric_count
+
+
 def step_actions_en_bert_classifier_print(state: Dict):
     all_dict = defaultdict(int)
     for key, value in state.items():
@@ -124,7 +148,34 @@ def step_actions_en_bert_classifier_print(state: Dict):
     return {"accuracy": round(all_success / total_samples, 2)}
 
 
+def automotive_user_opinions_bert_multi_task_print(state: Dict):
+
+    all_category_hit = torch.LongTensor(state["category_hit"])
+    all_category_hit = torch.sum(all_category_hit, dim=0)
+    all_category = torch.LongTensor(state["category"])
+    all_category = torch.sum(all_category, dim=0)
+
+    all_emotion_hit = sum(state["emotion_hit"])
+    all_emotion = sum(state["emotion"])
+
+    # 避免除以零：当 all_category 为 0 时，返回 0
+    mask = all_category != 0
+    result = torch.where(mask, all_category_hit /
+                         all_category, torch.tensor(0.0))
+    category_accuracy = round(float(torch.mean(result)), 2)
+
+    emotion_accuracy = round(all_emotion_hit / all_emotion, 2)
+
+    return {"accuracy": round((category_accuracy + emotion_accuracy) / 2, 2)}
+
+
 def step_actions_en_bert_classifier_comparison(metric1: Dict, metric2: Dict) -> bool:
+    if metric1["accuracy"] > metric2["accuracy"]:
+        return True
+    else:
+        return False
+    
+def automotive_user_opinions_bert_multi_task_comparison(metric1: Dict, metric2: Dict) -> bool:
     if metric1["accuracy"] > metric2["accuracy"]:
         return True
     else:
@@ -163,21 +214,19 @@ def select_best_checkpoint(checkpoint_metrics, comparison_func) -> Tuple[Optiona
 
 def step_actions_bert_classifier_predict(batch: Dict[str, Any], results: Dict[str, Any], id2label: Dict[int, str]) -> List:
     predict = results["predict"]
-    
+
     predict_list = []
     for id in predict.tolist():
         predict_list.append(id2label[id])
-        
 
     return zip(predict_list, batch["index"])
 
 
 def step_actions_en_bert_classifier_predict(batch: Dict[str, Any], results: Dict[str, Any], id2label: Dict[int, str]) -> List:
     predict = results["predict"]
-    
+
     predict_list = []
     for id in predict.tolist():
         predict_list.append(id2label[id])
-        
 
     return zip(predict_list, batch["index"])
